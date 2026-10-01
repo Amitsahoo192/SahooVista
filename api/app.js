@@ -6,6 +6,7 @@ import testRoute from "./routes/test.routes.js";
 import userRoute from "./routes/user.route.js";
 import chatRoute from "./routes/chat.route.js";
 import messageRoute from "./routes/message.route.js"; 
+import "dotenv/config";
 import cors from "cors";
 const app = express();
 app.use(cors({

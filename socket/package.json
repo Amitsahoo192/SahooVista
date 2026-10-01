@@ -1,16 +1,15 @@
 {
   "name": "socket",
   "version": "1.0.0",
-  "description": "",
+  "description": "Socket.IO server for SahooVista",
   "license": "ISC",
-  "author": "",
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "dependencies": {
-    "socket": "^1.1.157",
+    "dotenv": "^18.0.3",
     "socket.io": "^4.8.3"
   }
 }

@@ -13,10 +13,10 @@ function SinglePage() {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
  const handleMessage = async () => {
-  if (!currentUser) {
-    navigate("/login");
-    return;
-  }
+ if (!currentUser) {
+  navigate("/login");
+  return;
+}
 
   if (post.userId === currentUser.id) {
     alert("You cannot message yourself!");
@@ -35,11 +35,12 @@ function SinglePage() {
 };
 
   const handleSave = async () => {
-    if (!currentUser) {
-      navigate("/login");
-    }
-    // AFTER REACT 19 UPDATE TO USEOPTIMISTIK HOOK
-    setSaved((prev) => !prev);
+  if (!currentUser) {
+    navigate("/login");
+    return;
+  }
+
+  setSaved((prev) => !prev);
     try {
       await apiRequest.post("/users/save", { postId: post.id });
     } catch (err) {

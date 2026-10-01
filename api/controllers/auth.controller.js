@@ -47,9 +47,9 @@ export const login = async(req,res)=>{
    console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
    const age= 1000*60*60*24*7;
    const token = jwt.sign({
-       id:user.id,
-       isAdmin:true,
-   },process.env.JWT_SECRET_KEY,{expiresIn:age})
+      id: user.id,
+      isAdmin: user.role === "ADMIN",
+   }, process.env.JWT_SECRET_KEY, { expiresIn: age });
    const {password:userPassword,...userInfo}=user;
    
    res.cookie("token",token,{

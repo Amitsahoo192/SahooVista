@@ -19,7 +19,25 @@ function NewPostPage() {
     const inputs = Object.fromEntries(formData);
 
     try {
-      const res = await apiRequest.post("/post", {
+      if (
+        !inputs.title ||
+        !inputs.price ||
+        !inputs.address ||
+        !inputs.city ||
+        !inputs.bedroom ||
+        !inputs.bathroom ||
+        !inputs.latitude ||
+        !inputs.longitude ||
+        !inputs.size ||
+        !inputs.school ||
+        !inputs.bus ||
+        !inputs.restaurant ||
+        images.length === 0
+      ) {
+        setError("Please fill all required fields and upload at least one image.");
+        return;
+      }
+      const res = await apiRequest.post("/posts", {
         postData: {
           title: inputs.title,
           price: parseInt(inputs.price),
@@ -44,7 +62,7 @@ function NewPostPage() {
           restaurant: parseInt(inputs.restaurant),
         },
       });
-      navigate("/"+res.data.id)
+      navigate("/" + res.data.id)
     } catch (err) {
       console.log(err);
       setError(err.response.data.message);

@@ -12,8 +12,17 @@ export const getChats = async (req, res) => {
       },
     });
 
+    const validChats = [];
+
     for (const chat of chats) {
-      const receiverId = chat.userIDs.find((id) => id !== tokenUserId);
+      const receiverId = chat.userIDs.find(
+        (id) => id !== tokenUserId
+      );
+
+      // Skip broken chats that don't have another user
+      if (!receiverId) {
+        continue;
+      }
 
       const receiver = await prisma.user.findUnique({
         where: {
@@ -25,13 +34,24 @@ export const getChats = async (req, res) => {
           avatar: true,
         },
       });
-      chat.receiver = receiver;
+
+      // Skip chat if receiver no longer exists
+      if (!receiver) {
+        continue;
+      }
+
+      validChats.push({
+        ...chat,
+        receiver,
+      });
     }
 
-    res.status(200).json(chats);
+    return res.status(200).json(validChats);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to get chats!" });
+    return res.status(500).json({
+      message: "Failed to get chats!",
+    });
   }
 };
 
@@ -55,6 +75,12 @@ export const getChat = async (req, res) => {
       },
     });
 
+    if (!chat) {
+      return res.status(404).json({
+        message: "Chat not found!",
+      });
+    }
+
     await prisma.chat.update({
       where: {
         id: req.params.id,
@@ -65,32 +91,84 @@ export const getChat = async (req, res) => {
         },
       },
     });
-    res.status(200).json(chat);
+
+    return res.status(200).json(chat);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to get chat!" });
+    return res.status(500).json({
+      message: "Failed to get chat!",
+    });
   }
 };
 
 export const addChat = async (req, res) => {
   const tokenUserId = req.userId;
+  const receiverId = req.body.receiverId;
+
   try {
-    const newChat = await prisma.chat.create({
-      data: {
-        userIDs: [tokenUserId, req.body.receiverId],
+    if (!receiverId) {
+      return res.status(400).json({
+        message: "Receiver ID is required!",
+      });
+    }
+
+    if (tokenUserId === receiverId) {
+      return res.status(400).json({
+        message: "You cannot create a chat with yourself!",
+      });
+    }
+
+    const receiver = await prisma.user.findUnique({
+      where: {
+        id: receiverId,
       },
     });
-    res.status(200).json(newChat);
+
+    if (!receiver) {
+      return res.status(404).json({
+        message: "Receiver not found!",
+      });
+    }
+
+    const existingChat = await prisma.chat.findFirst({
+      where: {
+        AND: [
+          {
+            userIDs: {
+              has: tokenUserId,
+            },
+          },
+          {
+            userIDs: {
+              has: receiverId,
+            },
+          },
+        ],
+      },
+    });
+
+    if (existingChat) {
+      return res.status(200).json(existingChat);
+    }
+
+    const newChat = await prisma.chat.create({
+      data: {
+        userIDs: [tokenUserId, receiverId],
+      },
+    });
+
+    return res.status(200).json(newChat);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to add chat!" });
+    return res.status(500).json({
+      message: "Failed to add chat!",
+    });
   }
 };
 
 export const readChat = async (req, res) => {
   const tokenUserId = req.userId;
 
-  
   try {
     const chat = await prisma.chat.update({
       where: {
@@ -105,9 +183,12 @@ export const readChat = async (req, res) => {
         },
       },
     });
-    res.status(200).json(chat);
+
+    return res.status(200).json(chat);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to read chat!" });
+    return res.status(500).json({
+      message: "Failed to read chat!",
+    });
   }
 };
