@@ -1,3 +1,4 @@
+
 import { useContext, useState } from "react";
 import "./navbar.scss";
 import { Link } from "react-router-dom";
@@ -7,54 +8,76 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const { currentUser } = useContext(AuthContext);
 
+  const closeMenu = () => setOpen(false);
+
   return (
     <nav>
       <div className="left">
-        <Link to="/" className="logo">
-          <img src="/logo.png" alt="" />
+        <Link to="/" className="logo" onClick={closeMenu}>
+          <img src="/logo.png" alt="SahooVista logo" />
           <span>SahooVista</span>
         </Link>
 
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-        <Link to="/contact">Contact</Link>
-        <Link to="/agents">Agents</Link>
+        <Link to="/" onClick={closeMenu}>Home</Link>
+        <Link to="/about" onClick={closeMenu}>About</Link>
+        <Link to="/contact" onClick={closeMenu}>Contact</Link>
+        <Link to="/agents" onClick={closeMenu}>Agents</Link>
       </div>
 
       <div className="right">
         {currentUser ? (
           <div className="user">
-            <img src={currentUser.avatar || "/noavatar.png"} alt="" />
+            <img
+              src={currentUser.avatar || "/noavatar.png"}
+              alt="Profile"
+            />
             <span>{currentUser.username}</span>
 
-            <Link to="/profile" className="profile">
+            <Link
+              to="/profile"
+              className="profile"
+              onClick={closeMenu}
+            >
               <span>Profile</span>
             </Link>
           </div>
         ) : (
           <>
-            <Link to="/login">Sign in</Link>
-            <Link to="/register" className="register">
+            <Link to="/login" onClick={closeMenu}>Sign in</Link>
+            <Link
+              to="/register"
+              className="register"
+              onClick={closeMenu}
+            >
               Sign up
             </Link>
           </>
         )}
 
-        <div className="menuIcon">
-          <img
-            src="/menu.png"
-            alt=""
-            onClick={() => setOpen((prev) => !prev)}
-          />
-        </div>
+        <button
+          type="button"
+          className="menuIcon"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+          onClick={() => setOpen((previous) => !previous)}
+        >
+          <img src="/menu.png" alt="" />
+        </button>
 
         <div className={open ? "menu active" : "menu"}>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
-          <Link to="/agents">Agents</Link>
-          <Link to="/login">Sign in</Link>
-          <Link to="/register">Sign up</Link>
+          <Link to="/" onClick={closeMenu}>Home</Link>
+          <Link to="/about" onClick={closeMenu}>About</Link>
+          <Link to="/contact" onClick={closeMenu}>Contact</Link>
+          <Link to="/agents" onClick={closeMenu}>Agents</Link>
+
+          {currentUser ? (
+            <Link to="/profile" onClick={closeMenu}>Profile</Link>
+          ) : (
+            <>
+              <Link to="/login" onClick={closeMenu}>Sign in</Link>
+              <Link to="/register" onClick={closeMenu}>Sign up</Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

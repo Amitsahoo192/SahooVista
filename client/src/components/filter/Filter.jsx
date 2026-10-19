@@ -10,6 +10,7 @@ const FILTER_KEYS = [
   "minPrice",
   "maxPrice",
   "bedroom",
+  "bathroom",
   "tenant",
   "postedBy",
   "furnishing",
@@ -46,6 +47,14 @@ const PROPERTY_OPTIONS = [
   { value: "land", label: "Land" },
 ];
 
+const BEDROOM_OPTIONS = [
+  { value: "1", label: "1+" },
+  { value: "2", label: "2+" },
+  { value: "3", label: "3+" },
+  { value: "4", label: "4+" },
+  { value: "5", label: "5+" },
+];
+
 function readQuery(params) {
   return {
     type: params.get("type") || "",
@@ -54,6 +63,7 @@ function readQuery(params) {
     minPrice: params.get("minPrice") || "",
     maxPrice: params.get("maxPrice") || "",
     bedroom: params.get("bedroom") || "",
+    bathroom: params.get("bathroom") || "",
     tenant: params.get("tenant") || "",
     postedBy: params.get("postedBy") || "",
     furnishing: params.get("furnishing") || "",
@@ -73,8 +83,8 @@ function Filter() {
     setQuery(readQuery(searchParams));
   }, [searchParams]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
 
     setQuery((previous) => ({
       ...previous,
@@ -82,8 +92,8 @@ function Filter() {
     }));
   };
 
-  const handleFilter = (e) => {
-    e.preventDefault();
+  const handleFilter = (event) => {
+    event.preventDefault();
 
     if (
       query.minPrice &&
@@ -94,8 +104,24 @@ function Filter() {
       return;
     }
 
-    const params = new URLSearchParams(searchParams);
+    for (const [name, value] of [
+      ["Minimum price", query.minPrice],
+      ["Maximum price", query.maxPrice],
+      ["Bedrooms", query.bedroom],
+      ["Bathrooms", query.bathroom],
+    ]) {
+      if (
+        value !== "" &&
+        (!Number.isFinite(Number(value)) ||
+          Number(value) < 0 ||
+          !Number.isInteger(Number(value)))
+      ) {
+        window.alert(`${name} must be a valid non-negative whole number.`);
+        return;
+      }
+    }
 
+    const params = new URLSearchParams(searchParams);
     FILTER_KEYS.forEach((key) => params.delete(key));
 
     Object.entries(query).forEach(([key, value]) => {
@@ -120,6 +146,7 @@ function Filter() {
       minPrice: "",
       maxPrice: "",
       bedroom: "",
+      bathroom: "",
       tenant: "",
       postedBy: "",
       furnishing: "",
@@ -163,6 +190,16 @@ function Filter() {
             <span>{option.label}</span>
           </label>
         ))}
+        <label className="filterCheckbox">
+          <input
+            type="radio"
+            name={name}
+            value=""
+            checked={!query[name]}
+            onChange={handleChange}
+          />
+          <span>Any</span>
+        </label>
       </div>
     </div>
   );
@@ -176,12 +213,7 @@ function Filter() {
             Search results for <b>{query.city || "all locations"}</b>
           </p>
         </div>
-
-        <button
-          type="button"
-          className="clearButton"
-          onClick={clearFilters}
-        >
+        <button type="button" className="clearButton" onClick={clearFilters}>
           Clear all
         </button>
       </div>
@@ -201,10 +233,10 @@ function Filter() {
                 {key === "verified"
                   ? "Verified"
                   : key === "photos"
-                  ? "With photos"
-                  : key === "videos"
-                  ? "With videos"
-                  : `${key}: ${value}`}
+                    ? "With photos"
+                    : key === "videos"
+                      ? "With videos"
+                      : `${key}: ${value}`}
                 <span aria-hidden="true"> ×</span>
               </button>
             ))}
@@ -214,7 +246,6 @@ function Filter() {
 
       <div className="filterSection">
         <h3>Location</h3>
-
         <div className="item">
           <label htmlFor="city">City or area</label>
           <input
@@ -226,7 +257,6 @@ function Filter() {
             onChange={handleChange}
           />
         </div>
-
         <div className="item">
           <label htmlFor="locality">Locality</label>
           <input
@@ -250,14 +280,11 @@ function Filter() {
             <button
               type="button"
               key={option.value}
-              className={
-                query.type === option.value ? "choice active" : "choice"
-              }
+              className={query.type === option.value ? "choice active" : "choice"}
               onClick={() =>
                 setQuery((previous) => ({
                   ...previous,
-                  type:
-                    previous.type === option.value ? "" : option.value,
+                  type: previous.type === option.value ? "" : option.value,
                 }))
               }
             >
@@ -277,12 +304,12 @@ function Filter() {
               id="minPrice"
               name="minPrice"
               min="0"
+              step="1"
               placeholder="No minimum"
               value={query.minPrice}
               onChange={handleChange}
             />
           </div>
-
           <div className="item">
             <label htmlFor="maxPrice">Maximum price</label>
             <input
@@ -290,6 +317,7 @@ function Filter() {
               id="maxPrice"
               name="maxPrice"
               min="0"
+              step="1"
               placeholder="No maximum"
               value={query.maxPrice}
               onChange={handleChange}
@@ -313,7 +341,6 @@ function Filter() {
               <span>{option.label}</span>
             </label>
           ))}
-
           <label className="filterCheckbox">
             <input
               type="radio"
@@ -330,22 +357,41 @@ function Filter() {
       <div className="filterSection">
         <h3>Bedrooms / BHK</h3>
         <div className="choiceButtons">
-          {["1", "2", "3", "4", "5+"].map((bedroom) => (
+          {BEDROOM_OPTIONS.map((option) => (
             <button
               type="button"
-              key={bedroom}
-              className={
-                query.bedroom === bedroom ? "choice active" : "choice"
-              }
+              key={option.value}
+              className={query.bedroom === option.value ? "choice active" : "choice"}
               onClick={() =>
                 setQuery((previous) => ({
                   ...previous,
                   bedroom:
-                    previous.bedroom === bedroom ? "" : bedroom,
+                    previous.bedroom === option.value ? "" : option.value,
                 }))
               }
             >
-              {bedroom}
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="filterSection">
+        <h3>Bathrooms</h3>
+        <div className="choiceButtons">
+          {["1", "2", "3", "4"].map((bathroom) => (
+            <button
+              type="button"
+              key={bathroom}
+              className={query.bathroom === bathroom ? "choice active" : "choice"}
+              onClick={() =>
+                setQuery((previous) => ({
+                  ...previous,
+                  bathroom: previous.bathroom === bathroom ? "" : bathroom,
+                }))
+              }
+            >
+              {bathroom}+
             </button>
           ))}
         </div>
@@ -390,6 +436,7 @@ function Filter() {
             <option value="priceAsc">Price: low to high</option>
             <option value="priceDesc">Price: high to low</option>
             <option value="newest">Newest listings</option>
+            <option value="bedroomDesc">Most bedrooms</option>
           </select>
         </div>
       </div>

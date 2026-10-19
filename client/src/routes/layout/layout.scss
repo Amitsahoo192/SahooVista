@@ -2,14 +2,17 @@
 @import "../../responsive.scss";
 
 .layout {
-  min-height: 100vh;
   width: 100%;
+  height: 100vh;
+  min-height: 0;
   max-width: 1366px;
   margin: 0 auto;
   padding: 0 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   @include lg {
     max-width: 1280px;
@@ -24,10 +27,40 @@
     padding: 0 12px;
   }
 
+  .navbar {
+    flex: 0 0 100px;
+    height: 100px;
+    min-height: 100px;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+  }
+
   .content {
-    flex: 1;
+    flex: 1 1 0;
+    height: calc(100vh - 100px);
+    min-height: 0;
     min-width: 0;
     width: 100%;
+    overflow: hidden;
     box-sizing: border-box;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+
+    .navbar {
+      flex: 0 0 100px;
+    }
+
+    .content {
+      flex: 1 0 auto;
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+    }
   }
 }
