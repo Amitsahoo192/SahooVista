@@ -44,7 +44,6 @@ export const login = async(req,res)=>{
     })
    }
    //Generate Cookie token and Send it to the user
-   console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
    const age= 1000*60*60*24*7;
    const token = jwt.sign({
       id: user.id,
