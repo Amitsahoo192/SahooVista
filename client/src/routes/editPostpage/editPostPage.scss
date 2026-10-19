@@ -1,0 +1,93 @@
+
+@import "../../responsive.scss";
+
+.editPostPage {
+  display: flex;
+  height: 100%;
+  overflow-y: auto;
+
+  .formContainer {
+    flex: 3;
+    padding: 30px 50px;
+    max-width: 1000px;
+
+    @include md {
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      font-weight: 300;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+
+      @include sm {
+        grid-template-columns: 1fr;
+      }
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+
+        label {
+          font-size: 14px;
+          color: #555;
+        }
+
+        input,
+        select,
+        textarea {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          font: inherit;
+          background: white;
+        }
+
+        .imageHint {
+          color: #777;
+          font-size: 12px;
+        }
+      }
+
+      .description,
+      .item:has(textarea),
+      .error,
+      > button {
+        grid-column: 1 / -1;
+      }
+
+      .description {
+        .quill {
+          background: white;
+        }
+      }
+
+      .error {
+        color: #c62828;
+      }
+
+      > button {
+        padding: 14px;
+        background: #fece51;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+
+        &:disabled {
+          cursor: wait;
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+}

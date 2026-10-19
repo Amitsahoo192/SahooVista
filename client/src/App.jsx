@@ -16,12 +16,15 @@ import NewPostPage from "./routes/newPostPage/newPostPage";
 import AboutPage from "./routes/aboutPage/AboutPage";
 import ContactPage from "./routes/contactPage/ContactPage";
 import AgentsPage from "./routes/agentPage/AgentPage";
+import EditPostPage from "./routes/editPostpage/editPostPage";
 
 import {
   listPageLoader,
   singlePageLoader,
   profilePageLoader,
 } from "./lib/loaders";
+
+import apiRequest from "./lib/apiRequest";
 
 function App() {
   const router = createBrowserRouter([
@@ -39,7 +42,7 @@ function App() {
           loader: listPageLoader,
         },
 
-        // Static pages must come before /:id
+        // Static pages
         {
           path: "/about",
           element: <AboutPage />,
@@ -60,6 +63,7 @@ function App() {
           loader: singlePageLoader,
         },
 
+        // Authentication pages
         {
           path: "/login",
           element: <Login />,
@@ -71,6 +75,7 @@ function App() {
       ],
     },
 
+    // Protected routes
     {
       path: "/",
       element: <RequireAuth />,
@@ -88,6 +93,17 @@ function App() {
           path: "/add",
           element: <NewPostPage />,
         },
+        {
+          path: "/edit/:id",
+          element: <EditPostPage />,
+          loader: async ({ params }) => {
+            const response = await apiRequest.get(
+              `/posts/${params.id}`
+            );
+
+            return response.data;
+          },
+        },
       ],
     },
   ]);
@@ -96,4 +112,3 @@ function App() {
 }
 
 export default App;
-

@@ -1,3 +1,4 @@
+
 import "./listPage.scss";
 import Filter from "../../components/filter/Filter";
 import Card from "../../components/card/Card";
@@ -10,34 +11,48 @@ function ListPage() {
 
   return (
     <div className="listPage">
-      <div className="listContainer">
-        <div className="wrapper">
+      {/* Left: Filters */}
+      <aside className="filterContainer">
+        <div className="filterWrapper">
           <Filter />
-          <Suspense fallback={<p>Loading...</p>}>
+        </div>
+      </aside>
+
+      {/* Middle: Property search results */}
+      <main className="listContainer">
+        <div className="wrapper">
+          <Suspense fallback={<p>Loading properties...</p>}>
             <Await
               resolve={data.postResponse}
               errorElement={<p>Error loading posts!</p>}
             >
-              {(postResponse) => {
-                console.log(postResponse.data);
-                return postResponse.data.map((post) => (
-                  <Card key={post.id} item={post} />
-                ))
-              }}
+              {(postResponse) => (
+                postResponse.data.length > 0 ? (
+                  postResponse.data.map((post) => (
+                    <Card key={post.id} item={post} />
+                  ))
+                ) : (
+                  <p>No properties found. Try changing your filters.</p>
+                )
+              )}
             </Await>
           </Suspense>
         </div>
-      </div>
-      <div className="mapContainer">
-        <Suspense fallback={<p>Loading...</p>}>
+      </main>
+
+      {/* Right: Compact map */}
+      <aside className="mapContainer">
+        <Suspense fallback={<p>Loading map...</p>}>
           <Await
             resolve={data.postResponse}
-            errorElement={<p>Error loading posts!</p>}
+            errorElement={<p>Error loading map!</p>}
           >
-            {(postResponse) => <Map items={postResponse.data} />}
+            {(postResponse) => (
+              <Map items={postResponse.data} />
+            )}
           </Await>
         </Suspense>
-      </div>
+      </aside>
     </div>
   );
 }

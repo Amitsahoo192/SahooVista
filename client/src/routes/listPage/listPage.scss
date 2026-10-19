@@ -1,29 +1,119 @@
+
 @import "../../responsive.scss";
 
 .listPage {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(230px, 25%) minmax(0, 1fr) minmax(150px, 16%);
+  gap: 20px;
+  width: 100%;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
 
-  .listContainer {
-    flex: 3;
+  // LEFT: Filter sidebar
+  .filterContainer {
+    min-width: 0;
     height: 100%;
+    overflow: hidden;
+    background: #fff;
+    border-right: 1px solid #eee;
 
-    .wrapper{
+    .filterWrapper {
       height: 100%;
-      padding-right: 50px;
-      display: flex;
-      flex-direction: column;
-      gap: 50px;
-      overflow-y: scroll;
-      padding-bottom: 50px;
+      padding: 12px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
     }
   }
-  .mapContainer {
-    flex: 2;
-    height: 100%;
-    background-color: #fcf5f3;
 
-    @include md{
+  // MIDDLE: Property results
+  .listContainer {
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      height: 100%;
+      padding: 12px 4px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+    }
+  }
+
+  // RIGHT: Compact map
+  .mapContainer {
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    background-color: #fcf5f3;
+    border-radius: 8px;
+
+    > * {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+// Medium screens
+@media (max-width: 1100px) {
+  .listPage {
+    grid-template-columns: minmax(200px, 25%) minmax(0, 1fr) minmax(120px, 16%);
+    gap: 12px;
+
+    .filterContainer .filterWrapper {
+      padding: 10px;
+    }
+
+    .listContainer .wrapper {
+      gap: 18px;
+    }
+  }
+}
+
+// Mobile screens
+@media (max-width: 768px) {
+  .listPage {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+    gap: 16px;
+
+    .filterContainer {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      border-right: none;
+      border-bottom: 1px solid #eee;
+
+      .filterWrapper {
+        height: auto;
+        overflow: visible;
+        padding: 14px;
+      }
+    }
+
+    .listContainer {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+
+      .wrapper {
+        height: auto;
+        overflow: visible;
+        padding: 12px;
+        gap: 20px;
+      }
+    }
+
+    .mapContainer {
       display: none;
     }
   }

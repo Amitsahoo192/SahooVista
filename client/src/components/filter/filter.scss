@@ -1,55 +1,246 @@
+
 .filter {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
+  color: #252525;
+  padding: 4px 0 24px;
+
+  * {
+    box-sizing: border-box;
+  }
 
   h1 {
-    font-weight: 300;
+    font-weight: 600;
     font-size: 24px;
+    margin: 0;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  .filterHeading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+
+    p {
+      margin: 7px 0 0;
+      font-size: 13px;
+      color: #777;
+
+      b {
+        color: #333;
+      }
+    }
+  }
+
+  .clearButton {
+    background: transparent;
+    border: none;
+    color: #a36b00;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 7px 0;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .filterSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #ededed;
   }
 
   .item {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
+    min-width: 0;
 
     label {
-      font-size: 10px;
+      font-size: 12px;
+      color: #555;
+      font-weight: 500;
     }
 
     input,
     select {
-      width: 100px;
-      padding: 10px;
-      border: 1px solid #e0e0e0;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-  }
-
-  .top {
-    input {
       width: 100%;
+      min-width: 0;
+      padding: 11px 12px;
+      border: 1px solid #dedede;
+      border-radius: 7px;
+      background: #fff;
+      color: #333;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        border-color: #d8a52e;
+        box-shadow: 0 0 0 3px rgba(254, 206, 81, 0.18);
+      }
     }
   }
 
-  .bottom {
+  .filterHint {
+    margin: 0;
+    color: #858585;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .rangeInputs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .choiceButtons {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 8px;
+  }
 
-    button {
-      width: 100px;
-      padding: 10px;
-      border: none;
+  .choice {
+    min-width: 44px;
+    padding: 9px 13px;
+    border: 1px solid #dedede;
+    border-radius: 7px;
+    background: #fff;
+    color: #444;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+
+    &:hover {
+      border-color: #d8a52e;
+    }
+
+    &.active {
+      background: #fff3cf;
+      border-color: #e5b63f;
+      color: #6b4a00;
+      font-weight: 600;
+    }
+  }
+
+  .filterOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filterCheckbox {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #484848;
+    font-size: 13px;
+    cursor: pointer;
+
+    input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: #d8a52e;
       cursor: pointer;
-      background-color: #fece51;
+      flex-shrink: 0;
+    }
 
-      img {
-        width: 24px;
-        height: 24px;
-      }
+    span {
+      line-height: 1.4;
+    }
+  }
+
+  .appliedFilters {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .appliedLabel {
+    color: #777;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .filterChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .filterChip {
+    padding: 6px 9px;
+    border: 1px solid #ead7a2;
+    border-radius: 20px;
+    background: #fff8e5;
+    color: #6c5014;
+    font-size: 11px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+
+    &:hover {
+      background: #ffedbd;
+    }
+  }
+
+  .applyFilters {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #fece51;
+    color: #27210f;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+
+    &:hover {
+      background: #f4bd32;
+    }
+
+    &:active {
+      transform: scale(0.99);
+    }
+
+    img {
+      width: 19px;
+      height: 19px;
+      object-fit: contain;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .filter {
+    gap: 15px;
+
+    h1 {
+      font-size: 21px;
+    }
+
+    .rangeInputs {
+      gap: 9px;
     }
   }
 }
